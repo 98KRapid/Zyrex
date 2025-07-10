@@ -6,10 +6,10 @@ local player = Players.LocalPlayer
 
 -- Create blur and tween it in
 local blur = Instance.new("BlurEffect")
-blur.Parent = Lighting
 blur.Size = 0
+blur.Parent = Lighting
 
-local blurIn = TweenService:Create(blur, TweenInfo.new(0.5), {Size = 24})
+local blurIn = TweenService:Create(blur, TweenInfo.new(0.6, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {Size = 24})
 blurIn:Play()
 blurIn.Completed:Wait()
 
@@ -23,78 +23,80 @@ local frame = Instance.new("Frame", screenGui)
 frame.Size = UDim2.new(1, 0, 1, 0)
 frame.BackgroundTransparency = 1
 
+-- Background Frame
 local bg = Instance.new("Frame", frame)
 bg.Size = UDim2.new(1, 0, 1, 0)
-bg.BackgroundColor3 = Color3.fromRGB(10, 10, 20)
+bg.BackgroundColor3 = Color3.fromRGB(8, 10, 25)
 bg.BackgroundTransparency = 1
 bg.ZIndex = 0
 
-TweenService:Create(bg, TweenInfo.new(0.5), {BackgroundTransparency = 0.3}):Play()
+-- Optional rounded corners for modern look
+local corner = Instance.new("UICorner", bg)
+corner.CornerRadius = UDim.new(0, 0)
 
+TweenService:Create(bg, TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {BackgroundTransparency = 0.25}):Play()
+
+-- Letter Build
 local word = "Zyrex"
 local letters = {}
 
--- Function to tween out and cleanup
 local function tweenOutAndDestroy()
-    for _, label in ipairs(letters) do
-        TweenService:Create(label, TweenInfo.new(0.3), {
-            TextTransparency = 1,
-            TextSize = 20
-        }):Play()
-    end
+	for _, label in ipairs(letters) do
+		TweenService:Create(label, TweenInfo.new(0.3), {
+			TextTransparency = 1,
+			TextSize = 20
+		}):Play()
+	end
 
-    TweenService:Create(bg, TweenInfo.new(0.5), {BackgroundTransparency = 1}):Play()
+	TweenService:Create(bg, TweenInfo.new(0.4), {BackgroundTransparency = 1}):Play()
+	local blurOut = TweenService:Create(blur, TweenInfo.new(0.4), {Size = 0})
+	blurOut:Play()
+	blurOut.Completed:Wait()
 
-    local blurOut = TweenService:Create(blur, TweenInfo.new(0.5), {Size = 0})
-    blurOut:Play()
-    blurOut.Completed:Wait()
-
-    screenGui:Destroy()
-    blur:Destroy()
+	screenGui:Destroy()
+	blur:Destroy()
 end
 
--- Build letter labels with animation
+-- Create animated letter labels
 for i = 1, #word do
-    local char = word:sub(i, i)
+	local char = word:sub(i, i)
 
-    local label = Instance.new("TextLabel")
-    label.Text = char
-    label.Font = Enum.Font.GothamBlack
-    label.TextColor3 = Color3.new(1, 1, 1)
-    label.TextStrokeTransparency = 1
-    label.TextTransparency = 1
-    label.TextScaled = false
-    label.TextSize = 30
-    label.Size = UDim2.new(0, 60, 0, 60)
-    label.AnchorPoint = Vector2.new(0.5, 0.5)
-    label.Position = UDim2.new(0.5, (i - (#word / 2 + 0.5)) * 65, 0.5, 0)
-    label.BackgroundTransparency = 1
-    label.Parent = frame
+	local label = Instance.new("TextLabel")
+	label.Text = char
+	label.Font = Enum.Font.GothamBlack
+	label.TextColor3 = Color3.new(1, 1, 1)
+	label.TextStrokeTransparency = 1
+	label.TextTransparency = 1
+	label.TextSize = 30
+	label.Size = UDim2.new(0, 60, 0, 60)
+	label.AnchorPoint = Vector2.new(0.5, 0.5)
+	label.Position = UDim2.new(0.5, (i - (#word / 2 + 0.5)) * 65, 0.5, 0)
+	label.BackgroundTransparency = 1
+	label.ZIndex = 1
+	label.Parent = frame
 
-    local gradient = Instance.new("UIGradient")
-    gradient.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(100, 170, 255)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(50, 100, 160))
-    })
-    gradient.Rotation = 90
-    gradient.Parent = label
+	local gradient = Instance.new("UIGradient")
+	gradient.Color = ColorSequence.new({
+		ColorSequenceKeypoint.new(0, Color3.fromRGB(60, 110, 180)),
+		ColorSequenceKeypoint.new(1, Color3.fromRGB(30, 60, 120))
+	})
+	gradient.Rotation = 90
+	gradient.Parent = label
 
-    local tweenIn = TweenService:Create(label, TweenInfo.new(0.3), {
-        TextTransparency = 0,
-        TextSize = 60
-    })
-    tweenIn:Play()
+	local tweenIn = TweenService:Create(label, TweenInfo.new(0.3, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {
+		TextTransparency = 0,
+		TextSize = 64
+	})
+	tweenIn:Play()
 
-    table.insert(letters, label)
-    wait(0.25)
+	table.insert(letters, label)
+	wait(0.25)
 end
 
--- Hold then cleanup
-wait(1)
+wait(1.25)
 tweenOutAndDestroy()
 
--- Ensure game is loaded before continuing
 repeat task.wait() until player and player.Character
 if not game:IsLoaded() then
-    game.Loaded:Wait()
+	game.Loaded:Wait()
 end
