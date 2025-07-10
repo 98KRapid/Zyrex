@@ -15,7 +15,7 @@ blurIn.Completed:Wait()
 
 -- Create GUI
 local screenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
-screenGui.Name = "FrostbyteLoader"
+screenGui.Name = "ZYREXLoader"
 screenGui.ResetOnSpawn = false
 screenGui.IgnoreGuiInset = true
 
